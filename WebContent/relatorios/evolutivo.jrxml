@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="evolutivo" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2c725ac8-9efc-4310-92bd-091e5d6f7f9e">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="cnpj" class="java.lang.String"/>
+	<parameter name="perc" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select count(pontos) cpf, pontos , razaosocial, logradouro,cnpj
+from (
+select ce.cpf,e.razaosocial,logradouro,e.cnpj,sum(pontos) pontos
+from notas n, clientesxempresas ce,parametros p, empresas e
+where n.idclienteempresa = ce.idclienteempresa
+and ce.cnpj = p.cnpj
+and e.cnpj = ce.cnpj
+and p.status=0
+and ce.cnpj  = $P{cnpj}
+group by ce.cpf,razaosocial,logradouro,e.cnpj) t
+group by pontos
+order by 2 ;]]>
+	</queryString>
+	<field name="cpf" class="java.lang.Long">
+		<fieldDescription><![CDATA[Cpf do Cliente]]></fieldDescription>
+	</field>
+	<field name="pontos" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Número de Pontos]]></fieldDescription>
+	</field>
+	<field name="razaosocial" class="java.lang.String">
+		<fieldDescription><![CDATA[Razão Social]]></fieldDescription>
+	</field>
+	<field name="logradouro" class="java.lang.String">
+		<fieldDescription><![CDATA[Logradouro da Empresa]]></fieldDescription>
+	</field>
+	<field name="cnpj" class="java.lang.String">
+		<fieldDescription><![CDATA[Cnpj da Empresa]]></fieldDescription>
+	</field>
+	<variable name="nperc" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="221" y="23" width="133" height="20" uuid="dfaa27b8-21a0-4559-acd5-46df28d0ffaf"/>
+				<textElement textAlignment="Center">
+					<font size="14" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Relatório Evolutivo]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="488" y="23" width="63" height="20" uuid="aff2c5d1-13bb-4b1d-a89f-cf1b7dee973d"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="80" splitType="Stretch">
+			<textField>
+				<reportElement x="8" y="6" width="346" height="20" uuid="9da8cd28-2c5c-4e0c-a426-6681cbd6a343"/>
+				<textFieldExpression><![CDATA[$F{razaosocial}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="8" y="28" width="346" height="20" uuid="6422df0b-d053-402f-ad01-45687cac1218"/>
+				<textFieldExpression><![CDATA[$F{logradouro}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="8" y="51" width="213" height="20" uuid="db665b79-6f67-44a6-a51e-092c366e52ab"/>
+				<textFieldExpression><![CDATA[$F{cnpj}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="24" splitType="Stretch">
+			<staticText>
+				<reportElement x="18" y="0" width="72" height="22" uuid="0a7cf8f2-ccb3-4959-984c-c136531f2e77"/>
+				<text><![CDATA[Pontos Feitos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="113" y="0" width="100" height="20" uuid="f48b015c-2ac2-4eb9-90cb-4d81fd497e81"/>
+				<text><![CDATA[CPF´s]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="221" y="0" width="30" height="20" uuid="cea8153c-82d2-4d64-b2dd-797644051fd2"/>
+				<text><![CDATA[Perc]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="19" splitType="Stretch">
+			<textField>
+				<reportElement x="113" y="1" width="77" height="14" uuid="07c6df24-f08e-49d2-997d-d2bf7df3fb9a"/>
+				<textFieldExpression><![CDATA[$F{cpf}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="19" y="1" width="72" height="18" uuid="a080fe3c-c4c2-49e6-bb5f-65ab88066367"/>
+				<textFieldExpression><![CDATA[$F{pontos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="221" y="1" width="100" height="18" uuid="88e217db-e98c-46d6-ad49-a3a96b27db27"/>
+				<textFieldExpression><![CDATA[$P{perc}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="7" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="33" splitType="Stretch">
+			<textField>
+				<reportElement x="424" y="9" width="80" height="20" uuid="d2df97aa-1571-4edc-95dd-dd5b75a57a82"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="509" y="9" width="40" height="20" uuid="40446f88-d573-464a-b900-d1ba5352b93d"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="16" splitType="Stretch"/>
+	</summary>
+</jasperReport>
